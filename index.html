@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>FisioGest — Early Access</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue-50: #eff6ff;
+    --blue-100: #dbeafe;
+    --blue-200: #bfdbfe;
+    --blue-300: #93c5fd;
+    --blue-400: #60a5fa;
+    --blue-500: #3b82f6;
+    --blue-600: #2563eb;
+    --blue-700: #1d4ed8;
+    --pink-50: #fdf2f8;
+    --pink-100: #fce7f3;
+    --pink-200: #fbcfe8;
+    --pink-300: #f9a8d4;
+    --pink-400: #f472b6;
+    --pink-500: #ec4899;
+    --pink-600: #db2777;
+    --slate-200: #e2e8f0;
+    --slate-300: #cbd5e1;
+    --slate-400: #94a3b8;
+    --slate-500: #64748b;
+    --slate-700: #334155;
+    --slate-800: #1e293b;
+    --slate-900: #0f172a;
+    --white: #ffffff;
+    --radius-sm: 12px;
+    --radius-lg: 22px;
+    --radius-full: 9999px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html { font-size:16px; -webkit-text-size-adjust:100%; }
+  body {
+    font-family:'DM Sans',sans-serif;
+    background:var(--blue-50);
+    color:var(--slate-800);
+    min-height:100dvh;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  .bg-deco { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+  .blob { position:absolute; border-radius:50%; filter:blur(90px); }
+  .blob-1 { width:320px; height:320px; background:var(--blue-200); top:-80px; right:-60px; opacity:.5; animation:drift 22s ease-in-out infinite; }
+  .blob-2 { width:280px; height:280px; background:var(--pink-200); bottom:-60px; left:-40px; opacity:.45; animation:drift 26s ease-in-out infinite reverse; }
+  .blob-3 { width:200px; height:200px; background:var(--blue-100); top:45%; left:30%; opacity:.3; animation:drift 18s ease-in-out infinite 2s; }
+  @keyframes drift {
+    0%,100% { transform:translate(0,0) scale(1); }
+    33% { transform:translate(15px,-20px) scale(1.05); }
+    66% { transform:translate(-10px,15px) scale(.95); }
+  }
+  .page {
+    position:relative; z-index:1;
+    width:100%; max-width:440px;
+    margin:0 auto;
+    padding:20px 16px env(safe-area-inset-bottom,24px);
+    min-height:100dvh;
+    display:flex; flex-direction:column;
+  }
+  .header { padding:8px 0 20px; text-align:center; }
+  .logo-row { display:inline-flex; align-items:center; gap:8px; margin-bottom:18px; }
+  .logo-mark {
+    width:36px; height:36px; border-radius:10px;
+    background:linear-gradient(135deg,var(--blue-500),var(--blue-600));
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 3px 10px rgba(37,99,235,.3);
+  }
+  .logo-mark svg { width:20px; height:20px; }
+  .logo-text { font-family:'Outfit',sans-serif; font-size:19px; font-weight:700; color:var(--slate-800); letter-spacing:-.3px; }
+  .badge {
+    display:inline-flex; align-items:center; gap:6px;
+    background:linear-gradient(135deg,var(--pink-50),var(--pink-100));
+    border:1px solid var(--pink-200);
+    border-radius:var(--radius-full);
+    padding:5px 12px;
+    font-size:12.5px; font-weight:600; color:var(--pink-600);
+    margin-bottom:14px;
+  }
+  .badge-dot { width:6px; height:6px; border-radius:50%; background:var(--pink-500); animation:pd 2s ease-in-out infinite; }
+  @keyframes pd { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:.4;transform:scale(.8);} }
+  .hero-title {
+    font-family:'Outfit',sans-serif;
+    font-size:24px; font-weight:800; line-height:1.2;
+    color:var(--slate-900); letter-spacing:-.6px;
+    margin-bottom:10px;
+  }
+  .hero-title .accent {
+    background:linear-gradient(135deg,var(--blue-500),var(--pink-500));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  }
+  .hero-sub { font-size:14px; line-height:1.55; color:var(--slate-500); }
+  .pills { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; margin-top:14px; }
+  .pill {
+    display:inline-flex; align-items:center; gap:4px;
+    background:var(--white); border:1px solid var(--slate-200);
+    border-radius:var(--radius-full);
+    padding:5px 10px;
+    font-size:11.5px; font-weight:500; color:var(--slate-600);
+    box-shadow:0 1px 3px rgba(0,0,0,.04);
+  }
+  .pill svg { width:13px; height:13px; flex-shrink:0; }
+  .ic-b { color:var(--blue-500); }
+  .ic-p { color:var(--pink-500); }
+  .card {
+    flex:1;
+    background:rgba(255,255,255,.88);
+    backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
+    border-radius:var(--radius-lg);
+    border:1px solid rgba(255,255,255,.6);
+    box-shadow:0 8px 32px rgba(30,58,95,.07),0 1px 2px rgba(30,58,95,.04);
+    padding:22px 18px 26px;
+    margin-top:4px;
+    display:flex; flex-direction:column;
+  }
+  .progress { display:flex; gap:4px; margin-bottom:22px; }
+  .prog-seg { flex:1; height:3.5px; background:var(--slate-200); border-radius:2px; transition:background .4s,box-shadow .4s; }
+  .prog-seg.on { background:linear-gradient(90deg,var(--blue-400),var(--blue-500)); box-shadow:0 0 8px rgba(59,130,246,.2); }
+  .step { display:none; flex:1; flex-direction:column; animation:su .3s ease-out; }
+  .step.active { display:flex; }
+  @keyframes su { from{opacity:0;transform:translateY(16px);} to{opacity:1;transform:translateY(0);} }
+  .q-label { font-size:11.5px; font-weight:600; color:var(--blue-500); text-transform:uppercase; letter-spacing:.7px; margin-bottom:5px; }
+  .q-text { font-family:'Outfit',sans-serif; font-size:18px; font-weight:600; color:var(--slate-800); line-height:1.3; margin-bottom:18px; }
+  .opts { display:flex; flex-direction:column; gap:8px; flex:1; }
+  .opt {
+    display:flex; align-items:center; gap:12px;
+    width:100%; min-height:52px; padding:13px 14px;
+    background:var(--white); border:1.5px solid var(--slate-200);
+    border-radius:var(--radius-sm);
+    font-family:'DM Sans',sans-serif; font-size:14px; color:var(--slate-700);
+    text-align:left; cursor:pointer; outline:none;
+    transition:all .18s; -webkit-user-select:none; user-select:none;
+  }
+  .opt:active { transform:scale(.98); }
+  .opt.sel { border-color:var(--blue-400); background:var(--blue-50); color:var(--blue-700); box-shadow:0 0 0 3px rgba(59,130,246,.08); }
+  .r { width:20px; height:20px; border:2px solid var(--slate-300); border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:all .18s; }
+  .opt.sel .r { border-color:var(--blue-500); background:var(--blue-500); }
+  .opt.sel .r::after { content:''; width:6px; height:6px; background:#fff; border-radius:50%; }
+  .c { width:20px; height:20px; border:2px solid var(--slate-300); border-radius:6px; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:all .18s; }
+  .opt.sel .c { border-color:var(--blue-500); background:var(--blue-500); }
+  .opt.sel .c::after { content:''; width:11px; height:11px; background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white' stroke-width='3'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M5 13l4 4L19 7'/%3E%3C/svg%3E") center/contain no-repeat; }
+  .email-wrap { position:relative; margin-bottom:6px; }
+  .email-in {
+    width:100%; padding:16px 14px 16px 44px;
+    background:var(--white); border:1.5px solid var(--slate-200);
+    border-radius:var(--radius-sm);
+    font-family:'DM Sans',sans-serif; font-size:16px; color:var(--slate-800);
+    outline:none; transition:all .2s;
+  }
+  .email-in::placeholder { color:var(--slate-400); }
+  .email-in:focus { border-color:var(--blue-400); box-shadow:0 0 0 3px rgba(59,130,246,.1); }
+  .email-in.err { border-color:var(--pink-400); box-shadow:0 0 0 3px rgba(244,114,182,.12); }
+  .email-ic { position:absolute; left:14px; top:50%; transform:translateY(-50%); width:18px; height:18px; color:var(--slate-400); pointer-events:none; }
+  .email-hint { font-size:12px; color:var(--slate-400); margin-top:4px; padding-left:2px; }
+  .btns { display:flex; gap:10px; margin-top:auto; padding-top:20px; }
+  .b-back {
+    min-width:52px; padding:14px;
+    background:var(--white); border:1.5px solid var(--slate-200);
+    border-radius:var(--radius-sm);
+    font-family:'DM Sans',sans-serif; font-size:13.5px; font-weight:500; color:var(--slate-400);
+    cursor:pointer; transition:all .18s;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .b-back:active { transform:scale(.97); }
+  .b-back svg { width:18px; height:18px; }
+  .b-next {
+    flex:1; padding:14px 20px;
+    background:linear-gradient(135deg,var(--blue-500),var(--blue-600));
+    border:none; border-radius:var(--radius-sm);
+    font-family:'DM Sans',sans-serif; font-size:14.5px; font-weight:600; color:#fff;
+    cursor:pointer; transition:all .2s;
+    box-shadow:0 4px 14px rgba(37,99,235,.25);
+  }
+  .b-next:active { transform:scale(.97); }
+  .b-next:disabled { opacity:.35; cursor:default; box-shadow:none; transform:none; }
+  .b-next.pink { background:linear-gradient(135deg,var(--pink-500),var(--pink-600)); box-shadow:0 4px 14px rgba(236,72,153,.25); }
+  .b-next.sending { pointer-events:none; opacity:.65; }
+  .spin { display:inline-block; width:15px; height:15px; border:2px solid rgba(255,255,255,.3); border-top-color:#fff; border-radius:50%; animation:sp .6s linear infinite; vertical-align:middle; margin-right:6px; }
+  @keyframes sp { to{transform:rotate(360deg);} }
+  .done { display:none; text-align:center; flex:1; flex-direction:column; justify-content:center; align-items:center; animation:su .45s ease-out; padding:12px 0; }
+  .done.active { display:flex; }
+  .done-ic { width:64px; height:64px; background:linear-gradient(135deg,var(--blue-100),var(--pink-100)); border-radius:50%; display:flex; align-items:center; justify-content:center; margin-bottom:18px; animation:pop .5s cubic-bezier(.34,1.56,.64,1); }
+  .done-ic svg { width:28px; height:28px; color:var(--blue-600); }
+  @keyframes pop { from{transform:scale(0);} to{transform:scale(1);} }
+  .done h2 { font-family:'Outfit',sans-serif; font-size:21px; font-weight:700; color:var(--slate-900); margin-bottom:8px; }
+  .done p { font-size:13.5px; line-height:1.55; color:var(--slate-500); max-width:320px; }
+  .done .share-box { margin-top:20px; padding:12px 16px; background:linear-gradient(135deg,var(--blue-50),var(--pink-50)); border:1px solid var(--blue-200); border-radius:var(--radius-sm); font-size:13px; color:var(--blue-700); line-height:1.5; }
+  .hp { position:absolute; left:-9999px; opacity:0; height:0; width:0; overflow:hidden; }
+</style>
+</head>
+<body>
+<div class="bg-deco"><div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div></div>
+<div class="page">
+  <header class="header">
+    <div class="logo-row">
+      <div class="logo-mark"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m-3 0v10m-5 3h10a2 2 0 002-2V6a2 2 0 00-2-2H7a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></div>
+      <span class="logo-text">FisioGest</span>
+    </div>
+    <div class="badge"><span class="badge-dot"></span>100 plazas early access</div>
+    <h1 class="hero-title">Tus colaboraciones,<br>facturas y gestoría<br><span class="accent">sin el caos de siempre</span></h1>
+    <p class="hero-sub">Estamos montando la app que necesitas. Ayúdanos con 5 preguntas y entra en la lista.</p>
+    <div class="pills">
+      <span class="pill"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path class="ic-b" stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>1 mes gratis</span>
+      <span class="pill"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path class="ic-p" stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Acceso anticipado</span>
+      <span class="pill"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path class="ic-b" stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Dto. para un colega</span>
+    </div>
+  </header>
+  <div class="card">
+    <div class="progress">
+      <div class="prog-seg on" data-s="1"></div>
+      <div class="prog-seg" data-s="2"></div>
+      <div class="prog-seg" data-s="3"></div>
+      <div class="prog-seg" data-s="4"></div>
+      <div class="prog-seg" data-s="5"></div>
+      <div class="prog-seg" data-s="6"></div>
+    </div>
+    <div class="step active" data-step="1">
+      <div class="q-label">1 / 6</div>
+      <div class="q-text">¿Con cuántas clínicas colaboras?</div>
+      <div class="opts" data-type="single" data-key="clinicas">
+        <button type="button" class="opt" data-value="1"><span class="r"></span>1</button>
+        <button type="button" class="opt" data-value="2-3"><span class="r"></span>2–3</button>
+        <button type="button" class="opt" data-value="4+"><span class="r"></span>4 o más</button>
+        <button type="button" class="opt" data-value="ninguna"><span class="r"></span>No colaboro, solo pacientes propios</button>
+      </div>
+      <div class="btns"><button class="b-next" disabled onclick="go(1)">Siguiente</button></div>
+    </div>
+    <div class="step" data-step="2">
+      <div class="q-label">2 / 6</div>
+      <div class="q-text">¿Atiendes también pacientes por tu cuenta?</div>
+      <div class="opts" data-type="single" data-key="pacientes_propios">
+        <button type="button" class="opt" data-value="si_bastantes"><span class="r"></span>Sí, bastantes</button>
+        <button type="button" class="opt" data-value="algunos"><span class="r"></span>Algunos</button>
+        <button type="button" class="opt" data-value="no"><span class="r"></span>No, solo en clínicas</button>
+      </div>
+      <div class="btns">
+        <button class="b-back" onclick="go(-1)"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg></button>
+        <button class="b-next" disabled onclick="go(1)">Siguiente</button>
+      </div>
+    </div>
+    <div class="step" data-step="3">
+      <div class="q-label">3 / 6</div>
+      <div class="q-text">¿Cómo controlas lo que facturas y lo que te deben?</div>
+      <div class="opts" data-type="single" data-key="gestion_actual">
+        <button type="button" class="opt" data-value="excel"><span class="r"></span>Excel o similar</button>
+        <button type="button" class="opt" data-value="notas"><span class="r"></span>Notas o papel</button>
+        <button type="button" class="opt" data-value="confianza"><span class="r"></span>Lo que me dice la clínica y confío</button>
+        <button type="button" class="opt" data-value="app"><span class="r"></span>App de facturación genérica</button>
+        <button type="button" class="opt" data-value="mal"><span class="r"></span>Sinceramente, mal</button>
+      </div>
+      <div class="btns">
+        <button class="b-back" onclick="go(-1)"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg></button>
+        <button class="b-next" disabled onclick="go(1)">Siguiente</button>
+      </div>
+    </div>
+    <div class="step" data-step="4">
+      <div class="q-label">4 / 6</div>
+      <div class="q-text">¿Qué es lo que más lío te da? <span style="font-weight:400;font-size:14px;color:var(--slate-400)">(varias)</span></div>
+      <div class="opts" data-type="multi" data-key="dolores">
+        <button type="button" class="opt" data-value="porcentajes"><span class="c"></span>Cuadrar porcentajes de cada clínica</button>
+        <button type="button" class="opt" data-value="facturas"><span class="c"></span>Generar facturas correctamente</button>
+        <button type="button" class="opt" data-value="rentabilidad"><span class="c"></span>Saber cuánto gano al mes</button>
+        <button type="button" class="opt" data-value="gestoria"><span class="c"></span>Preparar todo para la gestoría</button>
+        <button type="button" class="opt" data-value="cobros"><span class="c"></span>Controlar lo pagado vs. pendiente</button>
+      </div>
+      <div class="btns">
+        <button class="b-back" onclick="go(-1)"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg></button>
+        <button class="b-next" disabled onclick="go(1)">Siguiente</button>
+      </div>
+    </div>
+    <div class="step" data-step="5">
+      <div class="q-label">5 / 6</div>
+      <div class="q-text">Si una app resolviera esto, ¿cuánto pagarías al mes?</div>
+      <div class="opts" data-type="single" data-key="precio">
+        <button type="button" class="opt" data-value="nada"><span class="r"></span>No pagaría</button>
+        <button type="button" class="opt" data-value="hasta_15"><span class="r"></span>Hasta 15 €</button>
+        <button type="button" class="opt" data-value="15_30"><span class="r"></span>15–30 €</button>
+        <button type="button" class="opt" data-value="mas_30"><span class="r"></span>Más de 30 €</button>
+        <button type="button" class="opt" data-value="depende"><span class="r"></span>Tendría que verlo</button>
+      </div>
+      <div class="btns">
+        <button class="b-back" onclick="go(-1)"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg></button>
+        <button class="b-next" disabled onclick="go(1)">Siguiente</button>
+      </div>
+    </div>
+    <div class="step" data-step="6">
+      <div class="q-label">Último paso</div>
+      <div class="q-text">Déjanos tu email y te avisamos antes que a nadie</div>
+      <div class="email-wrap">
+        <svg class="email-ic" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        <input type="email" class="email-in" id="email" placeholder="tu@email.com" autocomplete="email" inputmode="email">
+      </div>
+      <p class="email-hint">Sin spam. Solo para avisarte cuando esté lista.</p>
+      <input type="text" name="company_website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <div class="btns">
+        <button class="b-back" onclick="go(-1)"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg></button>
+        <button class="b-next pink" id="subBtn" onclick="send()">Quiero entrar</button>
+      </div>
+    </div>
+    <div class="done" id="doneScreen">
+      <div class="done-ic"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+      <h2>¡Estás dentro!</h2>
+      <p>Serás de los primeros en probar FisioGest. Te escribiremos en cuanto tengamos algo listo.</p>
+      <div class="share-box">¿Conoces a algún compi que también ande loco con las facturas? Pásale el link.</div>
+    </div>
+  </div>
+</div>
+<script>
+let cur=1;const ans={},t0=Date.now();
+const URL='https://script.google.com/macros/s/AKfycbxlixaRicwp0sbHmR-FOVW6w_kkjcZ6eCDSzeyBVds0nRDqw_OuzQtoz7QfxyZlBKrL/exec';
+document.querySelectorAll('.opts').forEach(g=>{
+  const t=g.dataset.type,k=g.dataset.key;
+  g.querySelectorAll('.opt').forEach(b=>{
+    b.addEventListener('click',()=>{
+      if(t==='single'){g.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');ans[k]=b.dataset.value;}
+      else{b.classList.toggle('sel');ans[k]=Array.from(g.querySelectorAll('.opt.sel')).map(x=>x.dataset.value).join(', ');}
+      b.closest('.step').querySelector('.b-next').disabled=!g.querySelectorAll('.opt.sel').length;
+    });
+  });
+});
+function go(d){cur+=d;document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));const el=document.querySelector(`.step[data-step="${cur}"]`);if(el)el.classList.add('active');document.querySelectorAll('.prog-seg').forEach(s=>{s.classList.toggle('on',parseInt(s.dataset.s)<=cur);});document.querySelector('.card').scrollIntoView({behavior:'smooth',block:'start'});}
+function validEmail(e){return/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);}
+async function send(){
+  const em=document.getElementById('email').value.trim(),hp=document.querySelector('.hp').value,dt=Date.now()-t0;
+  if(hp||dt<3000)return;
+  if(!validEmail(em)){document.getElementById('email').classList.add('err');document.getElementById('email').focus();return;}
+  ans.email=em;ans.timestamp=new Date().toISOString();ans.seconds=Math.round(dt/1000);
+  const btn=document.getElementById('subBtn');btn.innerHTML='<span class="spin"></span>Enviando...';btn.classList.add('sending');
+  try{await fetch(URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(ans)});}catch(e){}
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  document.querySelector('.progress').style.display='none';
+  document.getElementById('doneScreen').classList.add('active');
+}
+document.getElementById('email').addEventListener('input',function(){this.classList.remove('err');});
+</script>
+</body>
+</html>
